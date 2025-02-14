@@ -133,13 +133,16 @@ function Home() {
     </Navbar>
 
     {/* Create Task Button */}
-    <div className="text-end mb-3">
+    <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="px-3 py-2 bg-light border rounded">
+        <h5 className="mb-0 text-secondary">Total Tasks: {todos.length}</h5>
+      </div>
         <Button variant="primary" onClick={handleCreateClick}>Create Task</Button>
     </div>
 
     {/* Centered Table */}
     <div className="d-flex justify-content-center">
-        <div className="w-75">
+        <div className="w-100">
         <TodoList todos={todos} onDelete={handleDeleteClick} onUpdate={handleUpdate}/>
         </div>
     </div>

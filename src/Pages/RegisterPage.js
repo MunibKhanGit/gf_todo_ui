@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "../Services/api";
+import { toast } from "react-toastify"; 
 
 function RegisterPage() {
   const [username,setUsername] = useState("");
@@ -10,11 +11,16 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      toast.warning("All fields are required!"); // Show warning toast
+      return;
+    }
     try {
       await axios.post("https://localhost:7014/api/Auth/register", { name:username,email, password });
       navigate("/login");
+      toast.success("Registered successfully! Please log in.");
     } catch (error) {
-      console.error("Registration failed", error);
+      toast.error(error.response?.data?.message || "Registration failed!"); 
     }
   };
 
