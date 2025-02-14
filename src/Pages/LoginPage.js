@@ -17,7 +17,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post("https://localhost:7014/api/Auth/login", { email, password });
+      const response = await axios.post("/Auth/login", { email, password });
       localStorage.setItem("token", response.data.token);
       toast.success("Login successful!");
       navigate("/");

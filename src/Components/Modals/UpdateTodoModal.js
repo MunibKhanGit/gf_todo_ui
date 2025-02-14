@@ -17,7 +17,7 @@ function UpdateTodoModal({ todo, onClose, onUpdate }) {
     try {
       const updatedTodo = { ...todo, title, description };
 
-      await axios.put(`https://localhost:7014/api/Todo/${todo.id}`, updatedTodo,{
+      await axios.put(`/Todo/${todo.id}`, updatedTodo,{
         headers: {
           "Authorization": `Bearer ${token}`, // Include token
         },

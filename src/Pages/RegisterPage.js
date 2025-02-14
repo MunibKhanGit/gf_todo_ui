@@ -16,7 +16,7 @@ function RegisterPage() {
       return;
     }
     try {
-      await axios.post("https://localhost:7014/api/Auth/register", { name:username,email, password });
+      await axios.post("/Auth/register", { name:username,email, password });
       navigate("/login");
       toast.success("Registered successfully! Please log in.");
     } catch (error) {

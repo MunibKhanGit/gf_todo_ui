@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 
-
 function Home() {
     const [todos, setTodos] = useState([]);
     const [selectedTodo, setSelectedTodo] = useState(null);
@@ -26,7 +25,7 @@ function Home() {
     const fetchTodos = async () => {
       const token = localStorage.getItem("token");
       try {
-          const response = await axios.get("https://localhost:7014/api/Todo/GetAll", {
+          const response = await axios.get("/Todo/GetAll", {
               headers: {
                   Authorization: `Bearer ${token}`,
               },
@@ -57,7 +56,7 @@ function Home() {
         const token = localStorage.getItem("token");
     
         try {
-            await axios.delete(`https://localhost:7014/api/Todo/${selectedTodo.id}`, {
+            await axios.delete(`/Todo/${selectedTodo.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

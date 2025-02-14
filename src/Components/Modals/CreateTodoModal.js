@@ -17,7 +17,7 @@ function CreateTodoModal({ show, handleClose, onTodoCreated }) {
     const token = localStorage.getItem("token"); // Retrieve the token
 
     try {
-        const response = await axios.post("https://localhost:7014/api/Todo/Create", newTodo, {
+        const response = await axios.post("/Todo/Create", newTodo, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
