@@ -1,6 +1,7 @@
 import TodoList from "../Components/Todo/TodoList";
 import CreateTodoModal from "../Components/Modals/CreateTodoModal";
 import DeleteTodoModal from "../Components/Modals/DeleteTodoModal";
+import axios from "../Services/api";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -19,30 +20,25 @@ function Home() {
       fetchTodos();
       checkUserAuth();
     }, []);
-  
+
     const fetchTodos = async () => {
       const token = localStorage.getItem("token");
       try {
-        const response = await fetch("https://localhost:7014/api/Todo/GetAll",{
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setTodos(data);
-        } else {
-          const errorData = await response.json();
-          console.error("Failed to fetch todos:", errorData.message);
-          if (response.status === 401) {
-            localStorage.removeItem("token"); // Remove token if expired
-            alert("Session expired. Please log in again.");
-            navigate("/login"); // Redirect to login page
-          }
-        }
+          const response = await axios.get("https://localhost:7014/api/Todo/GetAll", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+          setTodos(response.data);
       } catch (error) {
-        console.error("Error fetching todos:", error);
+          console.error("Error fetching todos:", error.response?.data?.message || error.message);
+          if (error.response?.status === 401) {
+              localStorage.removeItem("token"); // Remove token if expired
+              alert("Session expired. Please log in again.");
+              navigate("/login"); // Redirect to login page
+          }
       }
-    };
+  };
 
     const handleTodoCreated = (newTodo) => {
         setTodos([...todos, newTodo]); // Add new task without refreshing
@@ -57,27 +53,21 @@ function Home() {
       const handleConfirmDelete = async () => {
         if (!selectedTodo) return;
         const token = localStorage.getItem("token");
-        try {
-          const response = await fetch(`https://localhost:7014/api/Todo/${selectedTodo.id}`, {
-            method: "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`, // Include token
-              "Content-Type": "application/json",
-            },
-          });
     
-          if (response.ok) {
-            setTodos(todos.filter(todo => todo.id !== selectedTodo.id));
-          } else {
-            console.error("Failed to delete task");
-          }
+        try {
+            await axios.delete(`https://localhost:7014/api/Todo/${selectedTodo.id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== selectedTodo.id));
         } catch (error) {
-          console.error("Error deleting task:", error);
+            console.error("Error deleting task:", error.response?.data?.message || error.message);
         }
     
         setShowDeleteModal(false);
         setSelectedTodo(null);
-      };
+    };
 
       const handleUpdate = (updatedTodo) => {
         setTodos((prevTodos) =>

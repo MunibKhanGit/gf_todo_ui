@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "../../Services/api";
 import { Modal, Button, Form } from "react-bootstrap";
 
 function CreateTodoModal({ show, handleClose, onTodoCreated }) {
@@ -7,37 +8,30 @@ function CreateTodoModal({ show, handleClose, onTodoCreated }) {
 
   const handleCreate = async () => {
     if (!title.trim() || !description.trim()) {
-      alert("Title and Description are required!");
-      return;
+        alert("Title and Description are required!");
+        return;
     }
 
     const newTodo = { title, description };
     const token = localStorage.getItem("token"); // Retrieve the token
 
     try {
-      const response = await fetch("https://localhost:7014/api/Todo/Create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(newTodo),
-      });
+        const response = await axios.post("https://localhost:7014/api/Todo/Create", newTodo, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-      if (response.ok) {
-        const createdTodo = await response.json();
-        onTodoCreated(createdTodo); // Update the list dynamically
+        onTodoCreated(response.data); // Update the list dynamically
         handleClose(); // Close modal
         setTitle("");
         setDescription("");
-      } else {
-        const errorMessage = await response.text();
-        alert(`Failed to create task: ${errorMessage}`);
-      }
     } catch (error) {
-      console.error("Error creating task:", error);
+        console.error("Error creating task:", error.response?.data?.message || error.message);
+        alert(`Failed to create task: ${error.response?.data?.message || error.message}`);
     }
-  };
+};
 
   return (
     <Modal show={show} onHide={handleClose}>
