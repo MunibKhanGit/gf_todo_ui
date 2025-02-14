@@ -3,6 +3,7 @@ import axios from "../../Services/api";
 import { toast } from "react-toastify";
 import UpdateTodoModal from "../Modals/UpdateTodoModal";
 import { Table, Button } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function TodoList({todos,onDelete,onUpdate}) {
     const [selectedTodo, setSelectedTodo] = useState(null); // Store todo for editing
@@ -43,8 +44,12 @@ function TodoList({todos,onDelete,onUpdate}) {
                             <td>{todo.title}</td>
                             <td>{todo.description}</td>
                             <td>
-                                <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditClick(todo)}>Update</Button>
-                                <Button variant="danger" size="sm" onClick={() => handleDeleteClick(todo)}>Delete</Button>
+                            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditClick(todo)}>
+                                    <FaEdit />
+                                </Button>
+                                <Button variant="danger" size="sm" onClick={() => handleDeleteClick(todo)}>
+                                    <FaTrash />
+                                 </Button>
                             </td>
                         </tr>
                     ))}

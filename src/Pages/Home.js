@@ -81,7 +81,7 @@ function Home() {
       const handleCreateClick = () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            toast.warning("Please log in to create a task!"); // Show warning
+            toast.error("You must be logged in to create a task!"); // Show warning
             return;
         }
         setShowCreateModal(true); // Open modal if authenticated
