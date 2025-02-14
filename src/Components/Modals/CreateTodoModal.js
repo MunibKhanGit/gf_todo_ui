@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "../../Services/api";
 import { Modal, Button, Form } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function CreateTodoModal({ show, handleClose, onTodoCreated }) {
   const [title, setTitle] = useState("");
@@ -8,7 +9,7 @@ function CreateTodoModal({ show, handleClose, onTodoCreated }) {
 
   const handleCreate = async () => {
     if (!title.trim() || !description.trim()) {
-        alert("Title and Description are required!");
+          toast.error("Title and Description are required!");
         return;
     }
 
@@ -23,13 +24,14 @@ function CreateTodoModal({ show, handleClose, onTodoCreated }) {
             },
         });
 
+        toast.success("Task created successfully!");
         onTodoCreated(response.data); // Update the list dynamically
         handleClose(); // Close modal
         setTitle("");
         setDescription("");
     } catch (error) {
         console.error("Error creating task:", error.response?.data?.message || error.message);
-        alert(`Failed to create task: ${error.response?.data?.message || error.message}`);
+        toast.error(`Failed to create task: ${error.response?.data?.message || error.message}`);
     }
 };
 

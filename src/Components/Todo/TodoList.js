@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "../../Services/api"; 
 import { toast } from "react-toastify";
 import UpdateTodoModal from "../Modals/UpdateTodoModal";
+import { Table, Button } from "react-bootstrap";
 
 function TodoList({todos,onDelete,onUpdate}) {
     const [selectedTodo, setSelectedTodo] = useState(null); // Store todo for editing
@@ -28,37 +29,36 @@ function TodoList({todos,onDelete,onUpdate}) {
     };
   return (
     <>
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {todos.map((todo) => (
-          <tr key={todo.id}>
-            <td>{todo.title}</td>
-            <td>{todo.description}</td>
-            <td>
-              <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditClick(todo)}>Update</button>
-              <button className="btn btn-danger btn-sm" onClick={() => handleDeleteClick(todo)}>Delete</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            <Table striped bordered hover className="text-center">
+                <thead className="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {todos.map((todo) => (
+                        <tr key={todo.id}>
+                            <td>{todo.title}</td>
+                            <td>{todo.description}</td>
+                            <td>
+                                <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditClick(todo)}>Update</Button>
+                                <Button variant="danger" size="sm" onClick={() => handleDeleteClick(todo)}>Delete</Button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
 
-    {/* Update Modal */}
-    {showUpdateModal && (
-      <UpdateTodoModal
-        todo={selectedTodo}
-        onClose={() => setShowUpdateModal(false)}
-        onUpdate={onUpdate}
-      />
-    )}
-  </>
+            {showUpdateModal && (
+                <UpdateTodoModal
+                    todo={selectedTodo}
+                    onClose={() => setShowUpdateModal(false)}
+                    onUpdate={onUpdate}
+                />
+            )}
+        </>
  );
 }
 

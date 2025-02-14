@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { Navbar, Nav, Button, Container } from "react-bootstrap";
+
 
 function Home() {
     const [todos, setTodos] = useState([]);
@@ -34,7 +36,7 @@ function Home() {
           console.error("Error fetching todos:", error.response?.data?.message || error.message);
           if (error.response?.status === 401) {
               localStorage.removeItem("token"); // Remove token if expired
-              alert("Session expired. Please log in again.");
+              toast.error("Session expired. Please log in again.");
               navigate("/login"); // Redirect to login page
           }
       }
@@ -61,8 +63,9 @@ function Home() {
                 },
             });
             setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== selectedTodo.id));
+            toast.success("Task deleted successfully!");
         } catch (error) {
-            console.error("Error deleting task:", error.response?.data?.message || error.message);
+            toast.error("Error deleting task:", error.response?.data?.message || error.message);
         }
     
         setShowDeleteModal(false);
@@ -92,7 +95,7 @@ function Home() {
               const username = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
               setUser(username);
           } catch (error) {
-              console.error("Invalid token:", error);
+              toast.error("Invalid token:", error);
               setUser(null);
           }
       } else {
@@ -108,28 +111,42 @@ function Home() {
 };
     
   return (
-    <div className="container mt-4">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>TODO List</h2>
-        {user ? (
-                <div>
-                    <span className="me-3">Welcome, {user}!</span>
-                    <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
-                </div>
-            ) : (
-                <div>
-                    <button className="btn btn-secondary me-2" onClick={() => navigate("/login")}>Login</button>
-                    <button className="btn btn-outline-secondary me-3" onClick={() => navigate("/register")}>Register</button>
-                </div>
-            )}
-        <button className="btn btn-primary" onClick={handleCreateClick}>
-          Create Task
-        </button>
-      </div>
-      <CreateTodoModal show={showCreateModal} handleClose={()=>setShowCreateModal(false)} onTodoCreated={handleTodoCreated} />
-      <DeleteTodoModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} onConfirmDelete={handleConfirmDelete} todo={selectedTodo}/>
-      <TodoList todos={todos} onDelete={handleDeleteClick} onUpdate={handleUpdate}/>
+    <Container className="mt-3">
+    {/* Navbar */}
+    <Navbar bg="light" expand="lg" className="mb-3">
+        <Container>
+            <Navbar.Brand>TODO App</Navbar.Brand>
+            <Nav className="ms-auto">
+                {user ? (
+                    <>
+                        <span className="me-3">Welcome, {user}!</span>
+                        <Button variant="danger" onClick={handleLogout}>Logout</Button>
+                    </>
+                ) : (
+                    <>
+                        <Button variant="secondary" className="me-2" onClick={() => navigate("/login")}>Login</Button>
+                        <Button variant="outline-secondary" onClick={() => navigate("/register")}>Register</Button>
+                    </>
+                )}
+            </Nav>
+        </Container>
+    </Navbar>
+
+    {/* Create Task Button */}
+    <div className="text-end mb-3">
+        <Button variant="primary" onClick={handleCreateClick}>Create Task</Button>
     </div>
+
+    {/* Centered Table */}
+    <div className="d-flex justify-content-center">
+        <div className="w-75">
+        <TodoList todos={todos} onDelete={handleDeleteClick} onUpdate={handleUpdate}/>
+        </div>
+    </div>
+
+    <CreateTodoModal show={showCreateModal} handleClose={()=>setShowCreateModal(false)} onTodoCreated={handleTodoCreated} />
+    <DeleteTodoModal show={showDeleteModal} handleClose={() => setShowDeleteModal(false)} onConfirmDelete={handleConfirmDelete} todo={selectedTodo}/>
+</Container>
   );
 }
 

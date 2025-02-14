@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "../../Services/api";
+import { toast } from "react-toastify";
 
 function UpdateTodoModal({ todo, onClose, onUpdate }) {
   const [title, setTitle] = useState(todo.title || "");
   const [description, setDescription] = useState(todo.description || "");
 
   const handleUpdate = async () => {
+    if (!title.trim() || !description.trim()) {
+      toast.error("Title or Description cannot be empty!");
+      return; 
+    }
+
     const token = localStorage.getItem("token");
     try {
       const updatedTodo = { ...todo, title, description };
@@ -14,14 +20,14 @@ function UpdateTodoModal({ todo, onClose, onUpdate }) {
       await axios.put(`https://localhost:7014/api/Todo/${todo.id}`, updatedTodo,{
         headers: {
           "Authorization": `Bearer ${token}`, // Include token
-          "Content-Type": "application/json",
         },
       }); // Update API call
 
+      toast.success("Task updated successfully!");
       onUpdate(updatedTodo); 
       onClose(); 
     } catch (error) {
-      console.error("Error updating todo:", error);
+      toast.error("Error updating todo:", error);
     }
   };
 
